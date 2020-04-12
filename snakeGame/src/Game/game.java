@@ -26,6 +26,7 @@ public class game extends Application {
     private Rectangle[] rectangle = new Rectangle[100];
     private Rectangle apple;
     private Random rand = new Random();
+    private int grow = 0;
     private boolean going = false;
     private int[] x = new int[100];
     private int[] y = new int[100];
@@ -34,6 +35,7 @@ public class game extends Application {
     private Button startGame;
     private Thread game;
     private int direction = 3;
+    private int counter = 3;
 
     /**
      * this method generates the snake shape, size, and color
@@ -87,6 +89,7 @@ public class game extends Application {
         //adding borderPane to scene
         Scene scene = new Scene(borderPane);
 
+        //-------------------------------------------//
         //TODO add a way to read to directions
         //getting wasd input keys
         startGame.setOnKeyPressed(event -> {
@@ -101,6 +104,7 @@ public class game extends Application {
                 System.out.println("S key was entered");
             }
         });
+        //-------------------------------------------//
 
 
         //setting scene
@@ -111,6 +115,8 @@ public class game extends Application {
         primaryStage.setMinWidth(514);
         primaryStage.setMaxHeight(543);
         primaryStage.setMaxWidth(514);
+
+        primaryStage.setTitle("Snake Game");
 
 
         //show window
@@ -125,6 +131,9 @@ public class game extends Application {
          */
         @Override
         public void handle(ActionEvent event) {
+
+            //disable start button
+            startGame.setDisable(true);
 
             //getting Rectangle form generateShape method
             apple = generateShape();
@@ -156,6 +165,47 @@ public class game extends Application {
             rectangle[0].setFill(Color.RED);
 
 
+
+
+        }
+    }
+
+    /**
+     * moves snake
+     */
+    public void moveSnake() {
+
+        int[][] temp = {{x[1], y[1]}, {}};
+        x[1] = x[0];
+        y[1] = y[0];
+        for (int i = 2; i < counter; i++) {
+            temp[1] = new int[]{x[i], y[i]};
+            x[i] = temp[0][0];
+            y[i] = temp[0][1];
+            temp[0] = temp[1];
+            if (grow > 0 && x[counter - 1] == getFood[0] && y[counter - 1] == getFood[1]) {
+                rectangle[counter - 1].setVisible(true);
+                grow--;
+            }// end of if statement
+        }//end of for loop
+
+        switch (direction){
+            case 0:
+                if (y[0] + 50 <= 450) y[0] += 50;
+                else y[0] = 0;
+                break;
+            case 1:
+                if (x[0] - 50 >= 0) x[0] -= 50;
+                else x[0] = 450;
+                break;
+            case 2:
+                if (y[0] - 50 >= 0) y[0] -= 50;
+                else y[0] = 450;
+                break;
+            case 3:
+                if (x[0] + 50 <= 450) x[0] += 50;
+                else x[0] = 0;
+                break;
         }
     }
 
