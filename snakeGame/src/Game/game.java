@@ -16,8 +16,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 
-import javax.swing.*;
-import java.security.Key;
 import java.util.Random;
 
 /**
@@ -37,6 +35,7 @@ public class game extends Application {
     private BorderPane borderPane = new BorderPane();
     private Button startGame;
     private int direction = 3;
+    private Scene scene;
     private int counter = 3;
 
 
@@ -73,9 +72,11 @@ public class game extends Application {
         hitTail = new int[]{
                 x[0], y[0]
         };
+        System.out.println(x[0] + " " + x[1] + " " + x[2] + " ");
 
         //exits game
-        quitGame.setOnAction(event -> System.exit(0));
+        quitGame.setOnAction(event ->
+                System.exit(0));
 
         //when pushed snake will be shown
         startGame.setOnAction(new StartButtonHandler());
@@ -90,7 +91,7 @@ public class game extends Application {
         hBox.setAlignment(Pos.BOTTOM_CENTER);
 
         //adding borderPane to scene
-        Scene scene = new Scene(borderPane);
+        scene = new Scene(borderPane);
 
         //setting scene
         primaryStage.setScene(scene);
@@ -103,8 +104,8 @@ public class game extends Application {
 
         //setting title of window
         primaryStage.setTitle("Snake Game");
-        primaryStage.setOnCloseRequest(event -> going =true);
-
+        primaryStage.setOnCloseRequest(event ->
+                going = true);
 
         //show window
         primaryStage.show();
@@ -113,14 +114,10 @@ public class game extends Application {
 
     class StartButtonHandler implements
             EventHandler<ActionEvent> {
-        /**
-         * @param event
-         */
         @Override
         public void handle(ActionEvent event) {
 
-            //disable start button after push
-            // startGame.setDisable(true);
+
             Thread game;
 
             //getting Rectangle form generateShape method
@@ -151,7 +148,7 @@ public class game extends Application {
 
             }
             rectangle[0].setFill(Color.RED);
-            game = new Thread(()-> {
+            game = new Thread(() -> {
                 while (!going) {
                     moveSnake();
                     try {
@@ -162,27 +159,35 @@ public class game extends Application {
                 }
             });
             game.start();
-
-
-                //-----------------------------------------------------------//
-                // adding key input handler
-                startGame.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
-                    KeyCode WASD = keyEvent.getCode();
-                    if (WASD == KeyCode.W) { //W key
-                        System.out.println("W key was entered ");
-                    } else if (WASD == KeyCode.D) {// D key
-                        System.out.println("D key was entered ");
-                    } else if (WASD == KeyCode.A) {// A key
-                        System.out.println("A key was entered");
-                    } else if (WASD == KeyCode.S) {// S key
-                        System.out.println("S key was entered");
-                    }
-                    hitTail = new int[]{
-                      x[0], y[0]
-                    };
-                });//end of key input handler
-                //------------------------------------------------------------//
-
+            // adding key input handler
+            startGame.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+                KeyCode WASD = keyEvent.getCode();
+                switch (WASD) {
+                    case D:
+                        if (direction != 1 && ((direction == 2 || direction == 0)
+                                && hitTail[1] != y[0])) direction = 3;
+                        System.out.println("D");
+                        break;
+                    case A:
+                        if (direction != 3 && ((direction == 2 || direction == 0)
+                                && hitTail[1] != y[0])) direction = 1;
+                        System.out.println("A");
+                        break;
+                    case S:
+                        if (direction != 2 && ((direction == 3 || direction == 0)
+                                && hitTail[1] != y[0])) direction = 0;
+                        System.out.println("S");
+                        break;
+                    case W:
+                        if (direction != 0 && ((direction == 3 || direction == 1)
+                                && hitTail[0] != x[0])) direction = 2;
+                        System.out.println("W");
+                        break;
+                }
+                hitTail = new int[]{
+                        x[0], y[0]
+                };
+            });//end of key input handler
 
         }
     }
@@ -191,24 +196,35 @@ public class game extends Application {
     /**
      * moves snake
      */
-    private void moveSnake() {
+    public void moveSnake() {
 
-        int[][] temp = {{x[1], y[1]}, {}};
+        int[][] temp = {{x[1],
+                y[1]}, {
+
+        }};
         System.out.println(temp.length);
         x[1] = x[0];
         y[1] = y[0];
-        for (int i = 2; i < counter; i++) {
-            temp[1] = new int[]{x[i], y[i]};
-            x[i] = temp[0][0];
-            y[i] = temp[0][1];
-            temp[0] = temp[1];
-            //adding new tail
-            if (grow > 0 && x[counter - 1] == getFood[0] && y[counter - 1] == getFood[1]) {
-                rectangle[counter - 1].setVisible(true);
-                --grow;
-            }// end of if statement
-        }//end of for loop
+        try {
+            for (int i = 2; i < counter; i++) {
+                System.out.println("test");
+                temp[1] = new int[]{x[i], y[i]};
+                x[i] = temp[0][0];
+                y[i] = temp[0][1];
+                temp[0] = temp[1];
 
+
+                //adding new tail
+                if (grow > 0 && x[counter - 1] == getFood[0]
+                        && y[counter - 1] == getFood[1]) {
+                    System.out.println(grow + " test");
+                    rectangle[counter - 1].setVisible(true);
+                    --grow;
+                }// end of if statement
+            }//end of for loop
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         switch (direction) {
             case 0:
                 if (y[0] + 50 <= 450) y[0] += 50;
@@ -235,6 +251,7 @@ public class game extends Application {
             going = true;
         } else {
             for (int i = 0; i < counter; i++) {
+                System.out.println("testing");
                 rectangle[i].setTranslateX(x[i]);
                 rectangle[i].setTranslateY(y[i]);
             }//end of for loop
@@ -242,6 +259,7 @@ public class game extends Application {
 
         if (rectangle[0].getBoundsInParent().intersects(apple.getBoundsInParent())) {
             boolean applePosition = false;
+            System.out.println("get food testing");
 
             getFood = new int[]{
                     (int) apple.getTranslateX(), (int) apple.getTranslateY()
@@ -254,34 +272,28 @@ public class game extends Application {
                 apple.setTranslateY(rand.nextInt(10) * 50);
 
                 //if snake gets the food it allows the apple to change locations
-                //@FIXME fix null Pointer Exceptions FUCK ME
-                if (collide(getFood[0], getFood[1]) && (int) apple.getTranslateX() != getFood[0]
-                        || (int) apple.getTranslateY() != getFood[1])
+                if (collide(getFood[0], getFood[1]) && (int) apple.getTranslateX() != getFood[0] || (int) apple.getTranslateY() != getFood[1])
                     applePosition = true;
             }//end of while loop
+            x[counter] = (int) apple.getTranslateX();
+            y[counter] = (int) apple.getTranslateY();
+            rectangle[counter].setTranslateX(rectangle[counter - 1].getX());
+            rectangle[counter].setTranslateY(rectangle[counter - 1].getY());
+            ++counter;
+            ++grow;
+            System.out.println(counter + " ");
 
-        }//end if statement
-        x[counter] = (int) apple.getTranslateX();
-        y[counter] = (int) apple.getTranslateY();
-        rectangle[counter].setTranslateX(rectangle[counter - 1].getX());
-        rectangle[counter].setTranslateY(rectangle[counter - 1].getY());
-        ++counter;
-        ++grow;
-        System.out.println(counter + " ");
 
+        }
 
     }
 
-    /**
-     * @param xAxis
-     * @param yAxis
-     * @return
-     */
     public boolean collide(int xAxis, int yAxis) {
         int intersects = 0;
         for (Rectangle rect : rectangle) {
             if (rect != rectangle[0] && intersects > 0 &&
-                    rect.isVisible() && xAxis == x[intersects] && yAxis == y[intersects]) {
+                    rect.isVisible() && xAxis == x[intersects]
+                    && yAxis == y[intersects]) {
                 System.out.println(intersects + " from the collide method");
                 return true;
             }
