@@ -18,6 +18,11 @@ import javafx.stage.Stage;
 import java.util.Random;
 
 /**
+ * This is the Snake game
+ * this applications uses javafx packages
+ * and css implementation
+ * using W A S D to move the mouse
+ *
  * @author david
  */
 public class game extends Application {
@@ -49,7 +54,7 @@ public class game extends Application {
         //size of food/snake
         Rectangle foodAndSnake = new Rectangle(45, 45);
         //color of snake/food
-        foodAndSnake.setFill(Color.BURLYWOOD);
+        foodAndSnake.setFill(Color.DARKGREEN);
         //outline of snake/food
         foodAndSnake.setStroke(Color.BLACK);
         //allows snake to pass border
@@ -58,23 +63,29 @@ public class game extends Application {
 
     }
 
-
+    /**
+     * this method creates the button and sets actions
+     * the start/quit button while creating the GUI
+     *
+     * @param primaryStage window for application
+     */
     @Override
     public void start(Stage primaryStage) {
 
         //start and stop button
         startGame = new Button("Start");
         Button quitGame = new Button("Quit");
-
+        startGame.getStyleClass().add("button-start");
+        quitGame.getStyleClass().add("button-quit");
 
         System.out.println(x[0] + " " + x[1] + " " + x[2] + " ");
 
         //exits game
-        quitGame.setOnAction(event ->
-                System.exit(0));
+        quitGame.setOnAction(event -> System.exit(0));
 
         //when pushed snake will be shown
         startGame.setOnAction(new StartButtonHandler());
+
 
         //for button layout
         HBox hBox = new HBox(10, startGame, quitGame);
@@ -87,6 +98,7 @@ public class game extends Application {
 
         //adding borderPane to scene
         scene = new Scene(borderPane);
+        scene.getStylesheets().add("index.css");
 
         //setting scene
         primaryStage.setScene(scene);
@@ -97,7 +109,8 @@ public class game extends Application {
         primaryStage.setMaxHeight(543);
         primaryStage.setMaxWidth(514);
 
-        //when window is exited applications stops
+
+        //when window is exited application stops
         primaryStage.setOnCloseRequest(windowEvent -> going = true);
 
         //setting title of window
@@ -110,6 +123,13 @@ public class game extends Application {
 
     class StartButtonHandler implements
             EventHandler<ActionEvent> {
+
+        /**
+         * This method generates the snakes body on button press
+         * and handle key input
+         *
+         * @param event start button handler
+         */
         @Override
         public void handle(ActionEvent event) {
 
@@ -120,12 +140,13 @@ public class game extends Application {
 
             //creates food image
             apple = generateShape();
-            apple.setStroke(Color.RED); //
+            //apple colors
+            apple.setStroke(Color.ORANGERED);
+            apple.setFill(Color.RED);
             apple.setVisible(true); //sets food to visible
             apple.setTranslateX(rand.nextInt(10) * 50);
             apple.setTranslateY(rand.nextInt(10) * 50);
             root.getChildren().add(apple);
-
 
             //setting snake to center of window
             root.setMaxHeight(543);
@@ -148,7 +169,7 @@ public class game extends Application {
                 root.getChildren().add(rectangle[i]);
 
             }
-            rectangle[0].setFill(Color.RED);
+            rectangle[0].setFill(Color.BLUE);
             game = new Thread(() -> {
                 while (!going) {
                     moveSnake();
@@ -187,6 +208,9 @@ public class game extends Application {
         }
     }
 
+    /**
+     * method for moving the food/snake
+     */
     public void moveSnake() {
 
         int[][] temp = {{x[1],
@@ -205,7 +229,6 @@ public class game extends Application {
                 //adding new tail
                 if (grow > 0 && x[counter - 1] == getFood[0]
                         && y[counter - 1] == getFood[1]) {
-                    System.out.println(grow + " test");
                     rectangle[counter - 1].setVisible(true);
                     --grow;
                 }// end of if statement
@@ -265,11 +288,17 @@ public class game extends Application {
                 rectangle[counter].setTranslateY(rectangle[counter - 1].getY());
                 ++counter;
                 ++grow;
-                System.out.println(counter + "counter");
+                System.out.println(counter + " blocks on screen");
             }
         }
     }
 
+    /**
+     * @param xAxis x of rectangle
+     * @param yAxis y of rectangle
+     * @return if the snake hits tail then a boolean is returned
+     * halting the application
+     */
     public boolean collide(int xAxis, int yAxis) {
         int i = 0;
         for (Rectangle rect : rectangle) {

@@ -1,0 +1,27 @@
+.root {
+    -fx-background-image: url("https://i.imgur.com/7C7abvR.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
+
+.button-start {
+    -fx-text-fill: black;
+    -fx-background-color: #46ff34;
+    -fx-font-style: normal;
+    -fx-font-weight: bold;
+    -fx-border-color: black;
+    -fx-border-width: inherit;
+
+
+}
+
+.button-quit {
+    -fx-text-fill: black;
+    -fx-background-color: red;
+    -fx-font-style: normal;
+    -fx-font-weight: bold;
+    -fx-border-color: black;
+    -fx-border-width: inherit;
+
+}
