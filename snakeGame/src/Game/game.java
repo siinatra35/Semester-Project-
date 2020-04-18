@@ -21,7 +21,7 @@ import java.util.Random;
  * This is the Snake game
  * this applications uses javafx packages
  * and css implementation
- * using W A S D to move the mouse
+ * using W A S D to move the snake
  *
  * @author david
  */
